@@ -25,7 +25,8 @@ T = 1 ;
 % Prepare the bit signal 
 
 % Get bits data from file TODO: change with get_bits_from_file(transmit_file_name); 
-message = randn(300,1)>0;
+%message = randn(300,1)>0;
+message = get_bits_from_file(transmit_file_name);
 message_lgh = length(message);
 
 % Prepare preambules
@@ -92,7 +93,7 @@ xt = conv(xk, get_pulse(alpha, N, fs));
 
 % Plot time domain signals
 figure(1)
-LargeFigure(gcf, 0.15); % Make figure large
+%LargeFigure(gcf, 0.15); % Make figure large
 clf
 
 % Plot p(t)
@@ -111,12 +112,15 @@ zoom xon
 % Plot x 
 figure(2)
 clf
-display_continuous_signal(1:length(x), x, 'bit', 'bit value', 'tramsitted sequence in bits')
+display_bitstream(x, 'discrete time values', 'value', 'bitstream')
+axis tight
+
+
 zoom on 
 
 % Plot frequency domain signals
 figure(3)
-LargeFigure(gcf, 0.15); % Make figure large
+%LargeFigure(gcf, 0.15); % Make figure large
 clf
 
 % Plot |P(f)|
@@ -130,7 +134,7 @@ zoom xon
 
 % Signal space 
 figure(4)
-LargeFigure(gcf, 0.15); % Make figure large
+%LargeFigure(gcf, 0.15); % Make figure large
 clf
 
 % Plot the M-PSK constellation
