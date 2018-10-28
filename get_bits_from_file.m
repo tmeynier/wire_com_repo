@@ -5,6 +5,6 @@
 function y = get_bits_from_file(transmit_file_name)
     
 image = imread(transmit_file_name);
-reshape(image, 1, []);
-    
+reshape(image, [], 1);
+
 end 
