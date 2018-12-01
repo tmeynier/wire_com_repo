@@ -19,9 +19,22 @@ coded_bits = LDPC_code.encode_bits(message_bits)
 flipping_bits = rand(block_len, 1) < 0.5;
 flipped_code = mod((coded_bits + flipping_bits), 2);
 
+%modulate, here with BPSK, to then decode
+modulated_bits = zeros(size(flipped_code));
+for jj = 1:size(flipped_code)
+    if flipped_code(jj) > 0
+        modulated_bits(jj) = 1;
+    else
+        modulated_bits(jj) = -1;
+    end
+end
+
 sigma = 0.4;
 AWG_noise = sigma/sqrt(2)*(randn(block_len, 1)); 
 
-received_bits = flipped_code + AWG_noise;
+received_bits = modulated_bits + AWG_noise;
 
+
+
+        
 

@@ -10,14 +10,14 @@ classdef LDPC_class < handle
     end
     
     methods
-        function obj = LDPC_class(block_length, info_length)
-            obj.codeword_len = block_length;
+        function obj = LDPC_class(block_len, info_length)
+            obj.codeword_len = block_len;
             obj.info_len = info_length;
-            obj.parity_len = block_length - info_length;
+            obj.parity_len = block_len - info_length;
         end
         
         
-        function [codeword] = encode_bits(obj, info_bits)
+        function [codeword] = encode_bits(obj, message_bits)
                 info_size = obj.info_len;
                 syndrome_size = obj.syndrome_len;
                 codeword_size = obj.codeword_len;
@@ -26,7 +26,7 @@ classdef LDPC_class < handle
                 % http://sigpromu.org/sarah/SJohnsonLDPCintro.pdf
                 p_matrix = obj.parity_matrix;
                 codeword = zeros(obj.codeword_len, 1);
-                codeword(1:info_size) = info_bits;
+                codeword(1:info_size) = message_bits;
                 
                 bit_parity = p_matrix * codeword;
                               
@@ -37,6 +37,11 @@ classdef LDPC_class < handle
                     codeword(info_size + ii) = curr_parity;
                 end
 
+                % equation at bottom of Modern Coding Theory by Richardson 
+                % and Urbanke, page 437
+                % pl = - sum from j = l+1 to n-k of H_(l,j)pj - sum from 
+                % j=1 to k of H_(l,(j+n-k))s_j
+                
                 parity_with_syndrome = p_matrix(:, info_size+1 : info_size+syndrome_size);
                 codeword_with_rate = codeword(info_size+1: info_size + syndrome_size);
                 bit_parity = mod(bit_parity + parity_with_syndrome * codeword_with_rate(:), 2);
@@ -53,10 +58,11 @@ classdef LDPC_class < handle
         end
                 
         
-        function load_parity_matrix(obj, block_length)
+        function load_parity_matrix(obj, block_len)
             
                 load 'half_rate_1944.mat';
                 
+                % depending on total block length
                 obj.syndrome_len = 81;
                 obj.parity_matrix = p_matrix;
                 obj.codeword_len = 1944;
