@@ -13,7 +13,7 @@ info_len = LDPC_code.info_len;
 
 message_bits = rand(info_len, 1) < 0.5;
 %Encode bits
-coded_bits = LDPC_code.encode_bits(message_bits)
+coded_bits = LDPC_code.encode_bits(message_bits);
 
 %flip some bits, add some noise
 flipping_bits = rand(block_len, 1) < 0.5;
@@ -33,6 +33,11 @@ sigma = 0.4;
 AWG_noise = sigma/sqrt(2)*(randn(block_len, 1)); 
 
 received_bits = modulated_bits + AWG_noise;
+
+No = 0.5; %debugging number, update later with actual calculation
+
+llr = LDPC_code.find_llr(received_bits, No);
+llr = llr .* (1 - 2*flipping_bits);
 
 
 

@@ -71,6 +71,26 @@ classdef LDPC_class < handle
             
         end
         
+        function llr_vector = find_llr(obj, received_signal, No)
+            % Based on llr calculation on p. 498 of "Contemporary Comm
+            % Systems using Matlab" by Proakis, Salehi, Bauch, assuming
+            % BPSK maps 1 to -1 and 0 to +1 - contrary to some previous
+            % definitions
+            prob_y_0 = zeros(length(received_signal), 1);
+            prob_y_1 = zeros(length(received_signal), 1);
+            
+            for iter = 1:length(received_signal)
+                % calculate probability of result being a 0
+                prob_0 = exp(-abs(received_signal(iter) - 1)^2/No);
+                prob_y_0((iter-1) + 1) = prob_y_0((iter-1) + 1) + prob_0;
+                
+                % calculate probability of result being a 1
+                prob_1 = exp(-abs(received_signal(iter) + 1)^2/No);
+                prob_y_1((iter-1) + 1) = prob_y_1((iter-1) + 1) + prob_1;
+            end
+            llr_vector = log(prob_y_0./prob_y_1);
+        end
+        
     end
     
 end
